@@ -7,7 +7,7 @@ on:
 env:
   SWR_REGISTRY: swr.ap-southeast-3.myhuaweicloud.com   # Huawei Cloud SWR registry URL, e.g., swr.ap-southeast-1.myhuaweicloud.com
   SWR_NAMESPACE: ap-southeast-3 # SWR namespace or project ID
-  SWR_IMAGE_NAME: facial-worker-daraga # Name of the Docker image in SWR
+  SWR_IMAGE_NAME: facial-worker-urs # Name of the Docker image in SWR
   SWR_LOGIN_KEY: ${{ secrets.SWR_LOGIN_KEY }}
   SWR_AK_KEY: ${{ secrets.SWR_AK_KEY }}
   SWR_ORGANIZATION: container-pti
