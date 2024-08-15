@@ -104,7 +104,7 @@ class Facial extends CI_Model {
     }
 
     public function existingInFacialImage($device_key, $person_id, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/exist_facial_image";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/exist_facial_image";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -119,7 +119,7 @@ class Facial extends CI_Model {
     }
 
     public function existingInFacialPerson($device_key, $person_id, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/exist_facial_person";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/exist_facial_person";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -134,14 +134,14 @@ class Facial extends CI_Model {
     }
 
     public function queueList($token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/queue_list";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/queue_list";
         $response = $this->callURSApi($url, $token);
         $que = json_decode($response);
         return $que;
     }
 
     public function deleteQueue($que_id, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/delete_que";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/delete_que";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -153,7 +153,7 @@ class Facial extends CI_Model {
     }
 
     public function updateQueRetryCount($que_id, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/update_que_retry";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/update_que_retry";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -165,7 +165,7 @@ class Facial extends CI_Model {
     }
     
     public function updateQueStatus($que_id, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/update_que_status";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/update_que_status";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -178,7 +178,7 @@ class Facial extends CI_Model {
 
 
     public function personDetails($person_id, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/person_details";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/person_details";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -192,7 +192,7 @@ class Facial extends CI_Model {
     }
 
     public function savePerson($faceid, $name, $card, $empid, $serial_number, $personId, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/save_person";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/save_person";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -211,7 +211,7 @@ class Facial extends CI_Model {
     }
 
     public function updateFacialImageStatus($person_id, $device_key, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/update_face_status";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/update_face_status";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -224,7 +224,7 @@ class Facial extends CI_Model {
     }
 
     public function saveApiToQueList($endpoint, $parameters, $status, $priority, $device_key, $device_from, $person_id, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/save_api_que";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/save_api_que";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -242,7 +242,7 @@ class Facial extends CI_Model {
     }
 
     public function processFacialLogs($que_id, $attendance, $token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/process_facial_logs";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/process_facial_logs";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
@@ -255,7 +255,7 @@ class Facial extends CI_Model {
     }
 
     public function processDailyLogs($token){
-        $url = "http://192.168.2.32/urshris/index.php/Worker_api_/process_daily_logs";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/process_daily_logs";
         $this->callURSApi($url, $token);
     }
 
