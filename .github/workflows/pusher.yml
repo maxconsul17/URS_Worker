@@ -2,7 +2,7 @@ name: Development Force Update
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   SWR_REGISTRY: swr.ap-southeast-3.myhuaweicloud.com   # Huawei Cloud SWR registry URL, e.g., swr.ap-southeast-1.myhuaweicloud.com
