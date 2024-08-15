@@ -19,7 +19,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
-        ref: master
+        ref: main
         
       # Add a step to delete the .env file
     - name: Delete .env file
