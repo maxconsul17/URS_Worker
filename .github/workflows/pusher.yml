@@ -24,12 +24,12 @@ jobs:
       # Add a step to delete the .env file
     - name: Delete .env file
       run: |
-        rm -f env
+        rm -f .env
       
     # Add a step to rename .env_demo to .env
     - name: Rename env_prod to .env
       run: |
-        mv env_prod env
+        mv env_prod .env
       
     - name: Docker Build
       run: |
