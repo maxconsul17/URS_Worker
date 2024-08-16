@@ -49,7 +49,8 @@ class Que extends CI_Controller {
 		$currentMinute = date('i', strtotime($date_time));
 		if (in_array($currentHour, $hours_allowed)) {
 			if($currentMinute == 0){
-				$this->dailyLogs();
+				// TAKOT PO AKO, BUKAS NA LANG PO.
+				// $this->dailyLogs();
 			}
 		}
 
