@@ -59,18 +59,17 @@ class Facial extends CI_Model {
             if($url == "api/face/find"){
                 $response = isset($response[0]->data)? $response[0]->data : array();
             }else if($url == "api/person/list/find"){
-                // 
                 $response = isset($response[0]->data)? $response[0]->data->records : 'false';
-                
             }else if($url == "api/record/list/find"){
-                // 
-                $response = isset($response[0]->data)? $response[0]->data->records : 'false';
                 // ADD THIS CONDITION TO REMOVE THE QUE BECAUSE IS SUCCESS BUT NO LOGS
                 if(isset($response[0]->msg) && $response[0]->msg == "success"){
                     if(isset($response[0]->success) && $response[0]->success == 1){
+                        // echo "<pre>"; print_r($response); die;
                         if(isset($response[0]->data->records) && count($response[0]->data->records) == 0) $this->deleteQueue($que_id, $token);
                     }
                 }
+                $response = isset($response[0]->data)? $response[0]->data->records : 'false';
+               
                 
             }else{
                 $response = isset($response[0]->success) ? $response[0]->success : array();

@@ -13,6 +13,7 @@ class Que extends CI_Controller {
 	public function index(){
 		echo "Started";
 		$token = $this->workerToken();
+		
 		$data = $this->facial->queueList($token);
 		if(isset($data->que_list) && $data->que_list){
 			foreach($data->que_list as $que){
@@ -122,7 +123,7 @@ class Que extends CI_Controller {
 
 	public function processFacialLogs($payloadRecord, $urlRecord, $device_key, $date_from, $date_to, $que_id, $token){
 		$date_range = $this->facial->getDatesFromRange($date_from, $date_to);
-		$attendance = $this->facial->facialCommand($payloadRecord, $urlRecord);
+		$attendance = $this->facial->facialCommand($payloadRecord, $urlRecord, $que_id, $token);
 		
 		if($attendance && is_array($attendance)){
 			// CHANGE STATUS OF QUE
