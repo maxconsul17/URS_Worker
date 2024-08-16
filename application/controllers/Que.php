@@ -44,7 +44,7 @@ class Que extends CI_Controller {
 		}
 		
 		$hours_allowed = array(3, 6, 9, 12, 15, 18, 20);
-		$date_time = $this->db->query("SELECT CURRENT_TIMESTAMP")->row()->CURRENT_TIMESTAMP;
+		$date_time = date('Y-m-d H:i:s');
 		$currentHour = date('G', strtotime($date_time));
 		$currentMinute = date('i', strtotime($date_time));
 		if (in_array($currentHour, $hours_allowed)) {
@@ -78,7 +78,7 @@ class Que extends CI_Controller {
 			if($command_response){
 				$this->facial->deleteQueue($que_id, $token);
 				
-				$person_d = $this->facial->personDetails($person_id);
+				$person_d = $this->facial->personDetails($person_id, $token);
 				$name = isset($person_d->name) ? $person_d->name : "";
 				$card = isset($person_d->card) ? $person_d->card : "";
 				$empid = isset($person_d->empid) ? $person_d->empid : "";
@@ -126,7 +126,7 @@ class Que extends CI_Controller {
 		if($attendance && is_array($attendance)){
 			// CHANGE STATUS OF QUE
 			$this->facial->deleteQueue($que_id, $token);
-			$this->processFacialLogs($attendance, $token);
+			$this->facial->processFacialLogs($que_id, $attendance, $token, $date_range);
 
 		}else{
 			$this->facial->updateQueRetryCount($que_id, $token);
@@ -146,7 +146,7 @@ class Que extends CI_Controller {
 				$transferResponse = $this->facial->facialCommand($payloadFace, $urlFace);
 				if($transferResponse){
 					 // UPDATE FACIAL PERSON IMAGE STATUS
-					 $this->facial->updateFacialImageStatus($person_id, $device_key);
+					 $this->facial->updateFacialImageStatus($person_id, $device_key, $token);
 					// CHANGE STATUS OF QUE
 					$this->facial->deleteQueue($que_id, $token);
 				}else if(empty($transferResponse)){
@@ -168,7 +168,7 @@ class Que extends CI_Controller {
 		$curl = curl_init();
 
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'http://192.168.2.32/urshris/index.php/Worker_api_/worker_token',
+			CURLOPT_URL => getenv("CONFIG_BASE_URL"). '/index.php/Worker_api_/worker_token',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,

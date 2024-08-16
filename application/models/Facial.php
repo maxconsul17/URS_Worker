@@ -19,9 +19,9 @@ class Facial extends CI_Model {
         return $array;
     }
 
-    public function facialCommand($payload,$url)
+    public function facialCommand($payload, $url, $que_id="", $token="")
     { 
-        $faceServer = $this->db->faceServer;
+        $faceServer = "http://43.255.106.203:8190/";
         $urlServer = $faceServer.$url;
         $curl = curl_init();
         if($url == "api/face/add") $payload = $this->addUrlEncode($payload);
@@ -54,18 +54,24 @@ class Facial extends CI_Model {
         
         $response = json_decode("[".$response."]");
         curl_close($curl);
-        // echo "<pre>";print_r($response);die;
+        
          if(is_array($response) || is_object($response)){
             if($url == "api/face/find"){
                 $response = isset($response[0]->data)? $response[0]->data : array();
             }else if($url == "api/person/list/find"){
                 // 
                 $response = isset($response[0]->data)? $response[0]->data->records : 'false';
-                // echo "<pre>";print_r($response);die;
+                
             }else if($url == "api/record/list/find"){
                 // 
                 $response = isset($response[0]->data)? $response[0]->data->records : 'false';
-                // echo "<pre>";print_r($response);die;
+                // ADD THIS CONDITION TO REMOVE THE QUE BECAUSE IS SUCCESS BUT NO LOGS
+                if(isset($response[0]->msg) && $response[0]->msg == "success"){
+                    if(isset($response[0]->success) && $response[0]->success == 1){
+                        if(isset($response[0]->data->records) && count($response[0]->data->records) == 0) $this->deleteQueue($que_id, $token);
+                    }
+                }
+                
             }else{
                 $response = isset($response[0]->success) ? $response[0]->success : array();
             }
@@ -241,13 +247,14 @@ class Facial extends CI_Model {
         $this->callURSApi($url, $token, $param);
     }
 
-    public function processFacialLogs($que_id, $attendance, $token){
+    public function processFacialLogs($que_id, $attendance, $token, $date_range){
         $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/process_facial_logs";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
             "attendance" => $attendance,
-            "que_id" => $que_id
+            "que_id" => $que_id,
+            "date_range" => $date_range
         );
         $param = json_encode($param_tmp);
 
@@ -279,6 +286,9 @@ class Facial extends CI_Model {
         ));
 
         $response = curl_exec($curl);
+        // if($url == "https://urshr.pinnacle.com.ph/training/index.php/Worker_api_/process_facial_logs"){
+        //     echo "<pre>"; print_r($response); die;
+        // }
         return $response;
 
     }
