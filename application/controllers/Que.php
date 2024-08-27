@@ -12,7 +12,7 @@ class Que extends CI_Controller {
 	// DITO NAKALIST YUNG MGA API CALL
 	public function index(){
 		echo "Started";
-		$token = $this->workerToken();
+		// $token = $this->workerToken();
 		
 		$data = $this->facial->queueList($token);
 		if(isset($data->que_list) && $data->que_list){
