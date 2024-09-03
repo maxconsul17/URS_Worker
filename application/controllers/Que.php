@@ -14,7 +14,7 @@ class Que extends CI_Controller {
 		echo "Started";
 		// $token = $this->workerToken();
 		
-		$data = $this->facial->queueList($token);
+		$data = $this->facial->queueList();
 		if(isset($data->que_list) && $data->que_list){
 			foreach($data->que_list as $que){
 				$token = $this->workerToken();
@@ -44,16 +44,37 @@ class Que extends CI_Controller {
 			}
 		}
 		
-		$hours_allowed = array(3, 6, 9, 12, 15, 18, 20);
-		$date_time = date('Y-m-d H:i:s');
-		$currentHour = date('G', strtotime($date_time));
-		$currentMinute = date('i', strtotime($date_time));
-		if (in_array($currentHour, $hours_allowed)) {
-			if($currentMinute == 0){
-				// TAKOT PO AKO, BUKAS NA LANG PO.
-				// $this->dailyLogs();
-			}
-		}
+		// COMMENT SA MONDAY KO ICHECHECK
+		// // FOR CHECKING FACIAL FAILED LOGS
+		// $hours_allowed = array(3, 6, 9, 12, 15, 18, 20);
+		// $date_time = date('Y-m-d H:i:s');
+		// $currentHour = date('G', strtotime($date_time));
+		// $currentMinute = date('i', strtotime($date_time));
+		// if (in_array($currentHour, $hours_allowed)) {
+		// 	if($currentMinute == 0){
+		// 		// TAKOT PO AKO, BUKAS NA LANG PO.
+		// 		// $this->dailyLogs();
+		// 	}
+		// }
+		// // END
+
+		// // FOR RUNNING OF NIGHT SHIFT REPROCESS
+		// $current_time = date('H:i:s');
+
+		// // Check if the current time is exactly 12:00:00
+		// if ($current_time === '14:00:00') {
+		// 	// Action to perform if the current time is 12:00:00
+		// 	$this->nightShift();
+		// } 
+		// // END
+
+		// // FOR CALCULATING ATTENDANCE
+		// if ($current_time === '02:00:00') {
+		// 	// Action to perform if the current time is 12:00:00
+		// 	$this->calculateAttendance();
+		// } 
+		// // END
+		
 
 	}
 	
@@ -128,7 +149,7 @@ class Que extends CI_Controller {
 		if($attendance && is_array($attendance)){
 			// CHANGE STATUS OF QUE
 			$this->facial->deleteQueue($que_id, $token);
-			$this->facial->processFacialLogs($que_id, $attendance, $token, $date_range);
+			$this->facial->processFacialLogs($que_id, $attendance, $token, $date_range, $device_key);
 
 		}else{
 			$this->facial->updateQueRetryCount($que_id, $token);
@@ -164,6 +185,18 @@ class Que extends CI_Controller {
 		sleep(40);
 		$token = $this->workerToken();
 		$this->facial->processDailyLogs($token);
+	}
+
+	public function nightShift(){
+		sleep(40);
+		$token = $this->workerToken();
+		$this->facial->processNightShift($token);
+	}
+
+	public function calculateAttendance(){
+		sleep(40);
+		$token = $this->workerToken();
+		$this->facial->processCalculateAttendance($token);
 	}
 
 	public function workerToken(){

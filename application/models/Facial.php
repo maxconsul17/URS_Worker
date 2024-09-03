@@ -246,14 +246,15 @@ class Facial extends CI_Model {
         $this->callURSApi($url, $token, $param);
     }
 
-    public function processFacialLogs($que_id, $attendance, $token, $date_range){
+    public function processFacialLogs($que_id, $attendance, $token, $date_range, $device_key){
         $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/process_facial_logs";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
             "attendance" => $attendance,
             "que_id" => $que_id,
-            "date_range" => $date_range
+            "date_range" => $date_range,
+            "device_key" => $device_key
         );
         $param = json_encode($param_tmp);
 
@@ -262,6 +263,16 @@ class Facial extends CI_Model {
 
     public function processDailyLogs($token){
         $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/process_daily_logs";
+        $this->callURSApi($url, $token);
+    }
+
+    public function processNightShift($token){
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/process_night_shift";
+        $this->callURSApi($url, $token);
+    }
+
+    public function processCalculateAttendance($token){
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/iniCollectingAttendance_post";
         $this->callURSApi($url, $token);
     }
 
