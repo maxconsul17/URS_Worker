@@ -138,9 +138,9 @@ class Facial extends CI_Model {
         return isset($facial_person->existing) ? $facial_person->existing : 0;
     }
 
-    public function queueList($token){
+    public function queueList(){
         $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/queue_list";
-        $response = $this->callURSApi($url, $token);
+        $response = $this->callURSApi($url, "");
         $que = json_decode($response);
         return $que;
     }
