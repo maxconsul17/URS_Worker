@@ -44,13 +44,17 @@ class Que extends CI_Controller {
 			}
 		}
 
+		// CHECK ALL DEVICE IF STILL CONNECTED
+		$this->check_device_status();
+		// END
+
 		// FOR CHECKING IF DEVICE IS DISCONNECTED
 		$this->disconnectedDevices();
 		//END
 		
 		
 		// COMMENT SA MONDAY KO ICHECHECK
-		// // FOR CHECKING FACIAL FAILED LOGS
+		// FOR CHECKING FACIAL FAILED LOGS
 		$hours_allowed = array(15, 20);
 		$date_time = date('Y-m-d H:i:s');
 		$currentHour = date('G', strtotime($date_time));
@@ -60,24 +64,25 @@ class Que extends CI_Controller {
 				$this->dailyLogs();
 			}
 		}
-		// // END
+		// END
 
-		// // FOR RUNNING OF NIGHT SHIFT REPROCESS
+		// FOR RUNNING OF NIGHT SHIFT REPROCESS
 		// $current_time = date('H:i:s');
 
-		// // Check if the current time is exactly 12:00:00
+		// Check if the current time is exactly 12:00:00
 		// if ($current_time === '14:00:00') {
-		// 	// Action to perform if the current time is 12:00:00
+		 	// Action to perform if the current time is 12:00:00
 		// 	$this->nightShift();
 		// } 
-		// // END
+		// END
 
 		// FOR CALCULATING ATTENDANCE
+		$current_time = date('H:i:s');
 		if ($current_time === '02:00:00') {
 			// Action to perform if the current time is 12:00:00
 			$this->calculateAttendance();
 		} 
-		// // END
+		// END
 		
 
 	}
@@ -228,6 +233,11 @@ class Que extends CI_Controller {
 				}
 			}
 		}
+	}
+	
+	public function check_device_status(){
+		$token = $this->workerToken();
+		$data = $this->facial->checkDevicesStatus($token);
 	}
 
 	public function workerToken(){

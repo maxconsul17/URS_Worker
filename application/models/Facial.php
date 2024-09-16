@@ -284,6 +284,11 @@ class Facial extends CI_Model {
         return $this->callURSApi($url, $token);
     }
 
+    public function checkDevicesStatus($token){
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/check_devices_status";
+        return $this->callURSApi($url, $token);
+    }
+
     public function callURSApi($url, $token, $param=""){
 
         $curl = curl_init();
