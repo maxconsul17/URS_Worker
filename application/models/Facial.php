@@ -42,7 +42,7 @@ class Facial extends CI_Model {
 
         $response = curl_exec($curl);
         
-        if($url != "api/record/list/find") $payload = "";
+        // if($url != "api/record/list/find") $payload = "";
 
         // COMMENT NA MUNA TO SINCE DI ACCESSIBLE SA WORKER YUNG DATABASE
         // $trail = array(

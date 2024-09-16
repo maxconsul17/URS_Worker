@@ -45,7 +45,7 @@ class Que extends CI_Controller {
 		}
 
 		// CHECK ALL DEVICE IF STILL CONNECTED
-		// $this->check_device_status();
+		$this->check_device_status();
 		// END
 
 		// FOR CHECKING IF DEVICE IS DISCONNECTED
