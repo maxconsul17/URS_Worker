@@ -45,7 +45,7 @@ class Que extends CI_Controller {
 		}
 
 		// CHECK ALL DEVICE IF STILL CONNECTED
-		$this->check_device_status();
+		// $this->check_device_status();
 		// END
 
 		// FOR CHECKING IF DEVICE IS DISCONNECTED
@@ -244,7 +244,7 @@ class Que extends CI_Controller {
 		$curl = curl_init();
 
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => 'http://192.168.2.32/urshris/index.php/Worker_api_/worker_token',
+			CURLOPT_URL => getenv('CONFIG_BASE_URL').'/index.php/Worker_api_/worker_token',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,
