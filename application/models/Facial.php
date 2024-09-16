@@ -215,20 +215,21 @@ class Facial extends CI_Model {
         return $person_details;
     }
 
-    public function updateFacialImageStatus($person_id, $device_key, $token){
+    public function updateFacialImageStatus($person_id, $device_key, $token, $que_id){
         $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/update_face_status";
 
         // CONSTRUCT PARAM
         $param_tmp = array(
             "person_id" => $person_id,
-            "device_key" => $device_key
+            "device_key" => $device_key,
+            "que_id" => $que_id
         );
         $param = json_encode($param_tmp);
 
         $this->callURSApi($url, $token, $param);
     }
 
-    public function saveApiToQueList($endpoint, $parameters, $status, $priority, $device_key, $device_from, $person_id, $token){
+    public function saveApiToQueList($endpoint, $parameters, $status, $priority, $device_key, $device_from, $person_id, $dfrom, $dto, $token){
         $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/save_api_que";
 
         // CONSTRUCT PARAM
@@ -239,6 +240,8 @@ class Facial extends CI_Model {
             "priority" => $priority,
             "device_key" => $device_key,
             "device_from" => $device_from,
+            "date_from" => $dfrom,
+            "date_to" => $dto,
             "person_id" => $person_id
         );
         $param = json_encode($param_tmp);
@@ -274,6 +277,11 @@ class Facial extends CI_Model {
     public function processCalculateAttendance($token){
         $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/iniCollectingAttendance_post";
         $this->callURSApi($url, $token);
+    }
+
+    public function processDeviceDowntime($token){
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/process_devices_downtime";
+        return $this->callURSApi($url, $token);
     }
 
     public function callURSApi($url, $token, $param=""){

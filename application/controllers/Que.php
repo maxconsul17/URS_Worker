@@ -43,19 +43,23 @@ class Que extends CI_Controller {
 				}
 			}
 		}
+
+		// FOR CHECKING IF DEVICE IS DISCONNECTED
+		$this->disconnectedDevices();
+		//END
+		
 		
 		// COMMENT SA MONDAY KO ICHECHECK
 		// // FOR CHECKING FACIAL FAILED LOGS
-		// $hours_allowed = array(3, 6, 9, 12, 15, 18, 20);
-		// $date_time = date('Y-m-d H:i:s');
-		// $currentHour = date('G', strtotime($date_time));
-		// $currentMinute = date('i', strtotime($date_time));
-		// if (in_array($currentHour, $hours_allowed)) {
-		// 	if($currentMinute == 0){
-		// 		// TAKOT PO AKO, BUKAS NA LANG PO.
-		// 		// $this->dailyLogs();
-		// 	}
-		// }
+		$hours_allowed = array(15, 20);
+		$date_time = date('Y-m-d H:i:s');
+		$currentHour = date('G', strtotime($date_time));
+		$currentMinute = date('i', strtotime($date_time));
+		if (in_array($currentHour, $hours_allowed)) {
+			if($currentMinute == 0){
+				$this->dailyLogs();
+			}
+		}
 		// // END
 
 		// // FOR RUNNING OF NIGHT SHIFT REPROCESS
@@ -68,11 +72,11 @@ class Que extends CI_Controller {
 		// } 
 		// // END
 
-		// // FOR CALCULATING ATTENDANCE
-		// if ($current_time === '02:00:00') {
-		// 	// Action to perform if the current time is 12:00:00
-		// 	$this->calculateAttendance();
-		// } 
+		// FOR CALCULATING ATTENDANCE
+		if ($current_time === '02:00:00') {
+			// Action to perform if the current time is 12:00:00
+			$this->calculateAttendance();
+		} 
 		// // END
 		
 
@@ -126,11 +130,11 @@ class Que extends CI_Controller {
 							 // UPDATE FACIAL PERSON IMAGE STATUS
 							 $this->facial->updateFacialImageStatus($person_id, $device_key, $token);
                         }else if(empty($transferResponse)){
-							$this->facial->saveApiToQueList($urlFace, $payloadFace, "PENDING", 1, $device_key, $device_from, $person_id, $token);
+							$this->facial->saveApiToQueList($urlFace, $payloadFace, "PENDING", 1, $device_key, $device_from, $person_id, "", "", $token);
                         }
                     } 
                 }else if(empty($transferResponse)){
-					$this->facial->saveApiToQueList($urlPerson, $payloadPerson, "PENDING", 1, $device_key, $device_from, $person_id, $token);
+					$this->facial->saveApiToQueList($urlPerson, $payloadPerson, "PENDING", 1, $device_key, $device_from, $person_id, "", "", $token);
                 }
 
 			}else{
@@ -169,7 +173,7 @@ class Que extends CI_Controller {
 				$transferResponse = $this->facial->facialCommand($payloadFace, $urlFace);
 				if($transferResponse){
 					 // UPDATE FACIAL PERSON IMAGE STATUS
-					 $this->facial->updateFacialImageStatus($person_id, $device_key, $token);
+					 $this->facial->updateFacialImageStatus($person_id, $device_key, $token, $que_id);
 					// CHANGE STATUS OF QUE
 					$this->facial->deleteQueue($que_id, $token);
 				}else if(empty($transferResponse)){
@@ -199,11 +203,38 @@ class Que extends CI_Controller {
 		$this->facial->processCalculateAttendance($token);
 	}
 
+	public function disconnectedDevices(){
+		sleep(15);
+		$this->load->model("utilities");
+		$token = $this->workerToken();
+		$device_to_sync = $this->facial->processDeviceDowntime($token);
+		$device_list = json_decode($device_to_sync);
+		if($device_list){
+			foreach($device_list as $device_d){
+				$dfrom = date("Y-m-d", strtotime($device_d->dfrom));
+				$dto = date("Y-m-d", strtotime($device_d->dto));
+				$date_list = $this->utilities->displayDateRange($dfrom, $dto);
+				foreach($device_d->person_list as $personId){
+					foreach($date_list as $rdate){
+						$dateFrom = $rdate->dte." 01:01:01";
+        				$dateTo = $rdate->dte." 23:59:01";
+						$epoc_dfrom = strtotime($dateFrom) * 1000;
+						$epoc_dto = strtotime($dateTo) * 1000;
+
+						$payloadRecord = "deviceKey=".$device_d->device_key."&secret=12345678&personId=".$personId."&startTime=".$epoc_dfrom."&endTime=".$epoc_dto;
+						$urlRecord = 'api/record/list/find';
+						$this->facial->saveApiToQueList($urlRecord, $payloadRecord, "PENDING", 1, $device_d->device_key, "", $personId, $rdate->dte, $rdate->dte, $token);
+					}
+				}
+			}
+		}
+	}
+
 	public function workerToken(){
 		$curl = curl_init();
 
 		curl_setopt_array($curl, array(
-			CURLOPT_URL => getenv("CONFIG_BASE_URL"). '/index.php/Worker_api_/worker_token',
+			CURLOPT_URL => 'http://192.168.2.32/urshris/index.php/Worker_api_/worker_token',
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_ENCODING => '',
 			CURLOPT_MAXREDIRS => 10,

@@ -18,7 +18,7 @@ class Utilities extends CI_Model {
         foreach ($period as $key => $value) {
             $date_list[$key] = array();
             $date_list[$key] = (object) $date_list[$key];
-            $date_list[$key]->dte = $value->format('Y-m-d')    ;   
+            $date_list[$key]->dte = $value->format('Y-m-d');   
         }
         
         return $date_list;
