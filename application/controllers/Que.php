@@ -236,8 +236,8 @@ class Que extends CI_Controller {
 	}
 	
 	public function check_device_status(){
-		$token = $this->workerToken();
-		$data = $this->facial->checkDevicesStatus($token);
+		// $token = $this->workerToken();
+		// $data = $this->facial->checkDevicesStatus($token);
 	}
 
 	public function workerToken(){
