@@ -78,7 +78,7 @@ class Que extends CI_Controller {
 
 		// FOR CALCULATING ATTENDANCE
 		$current_time = date('H:i:s');
-		if ($current_time === '11:00:00' || $current_time === '12:00:00' || $current_time === '13:00:00' || $current_time === '14:00:00') {
+		if ($current_time === '14:00:00') {
 			// Action to perform if the current time is 12:00:00
 			$this->calculateAttendance();
 		} 
