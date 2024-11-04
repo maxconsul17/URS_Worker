@@ -12,7 +12,9 @@ class Que extends CI_Controller {
 	// DITO NAKALIST YUNG MGA API CALL
 	public function index(){
 		echo "Started";
-		// $token = $this->workerToken();
+
+		// CHECK IF USER INIT ATT RECOMPUTE
+		// $this->attendanceRecomputeList();
 		
 		$data = $this->facial->queueList();
 		if(isset($data->que_list) && $data->que_list){
@@ -77,11 +79,11 @@ class Que extends CI_Controller {
 		// END
 
 		// FOR CALCULATING ATTENDANCE
-		$current_time = date('H:i:s');
-		if ($current_time === '14:00:00') {
-			// Action to perform if the current time is 12:00:00
+		$current_hour = date('H');
+		if ($current_hour == '14') {
+			// Action to perform if the current hour is 2 PM
 			$this->calculateAttendance();
-		} 
+		}
 		// END
 		
 
@@ -238,6 +240,14 @@ class Que extends CI_Controller {
 	public function check_device_status(){
 		// $token = $this->workerToken();
 		// $data = $this->facial->checkDevicesStatus($token);
+	}
+
+	public function attendanceRecomputeList(){
+		$token = $this->workerToken();
+		$emp_list = $this->facial->attendanceRecomputeList($token);
+		foreach($emp_list as $emp_d){
+			$this->facial->initRecomputeAttendance($token, $emp_d);
+		}
 	}
 
 	public function workerToken(){

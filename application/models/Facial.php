@@ -275,7 +275,7 @@ class Facial extends CI_Model {
     }
 
     public function processCalculateAttendance($token){
-        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/iniCollectingAttendance_post";
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/iniCollectingAttendance";
         $this->callURSApi($url, $token);
     }
 
@@ -287,6 +287,16 @@ class Facial extends CI_Model {
     public function checkDevicesStatus($token){
         $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/check_devices_status";
         return $this->callURSApi($url, $token);
+    }
+    
+    public function attendanceRecomputeList($token){
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/att_recompute_list";
+        return $this->callURSApi($url, $token);
+    }
+
+    public function initRecomputeAttendance($token, $emp_d){
+        $url = getenv('CONFIG_BASE_URL')."/index.php/Worker_api_/init_att_recompute";
+        return $this->callURSApi($url, $token, $emp_d);
     }
 
     public function callURSApi($url, $token, $param=""){
