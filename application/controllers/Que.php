@@ -230,7 +230,7 @@ class Que extends CI_Controller {
 
 						$payloadRecord = "deviceKey=".$device_d->device_key."&secret=12345678&personId=".$personId."&startTime=".$epoc_dfrom."&endTime=".$epoc_dto;
 						$urlRecord = 'api/record/list/find';
-						$this->facial->saveApiToQueList($urlRecord, $payloadRecord, "PENDING", 1, $device_d->device_key, "", $personId, $rdate->dte, $rdate->dte, $token);
+						// $this->facial->saveApiToQueList($urlRecord, $payloadRecord, "PENDING", 1, $device_d->device_key, "", $personId, $rdate->dte, $rdate->dte, $token);
 					}
 				}
 			}
