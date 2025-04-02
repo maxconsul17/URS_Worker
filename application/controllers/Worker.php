@@ -27,28 +27,28 @@ class Worker extends WorkerController
     
     // Worker
     protected function handleWork($worker_id) {
-        // $getCalculateJob = $this->attendance_manager->getCalculateJob();
-        // if($getCalculateJob){
-        //     $this->attendance_manager->processCalculation();
-        //     return false;
-        // }
+        $getCalculateJob = $this->attendance_manager->getCalculateJob();
+        if($getCalculateJob){
+            $this->attendance_manager->processCalculation();
+            return false;
+        }
 
-        // $hasUpdateJob = $this->attendance_manager->getHasUpdateJob();
-        // if($hasUpdateJob){
-        //     $this->attendance_manager->processCalculationUpdate();
-        //     return false;
-        // }
+        $hasUpdateJob = $this->attendance_manager->getHasUpdateJob();
+        if($hasUpdateJob){
+            $this->attendance_manager->processCalculationUpdate();
+            return false;
+        }
 
-        // $getReportJob = $this->report_manager->getReportJob();
-        // if($getReportJob){
-        //     $this->report_manager->processReport($getReportJob, $worker_id);
-        //     return false;
-        // }
-        // $getRecomputeJob = $this->recompute_manager->getRecomputeJob();
-        // if($getRecomputeJob){
-        //     $this->recompute_manager->processRecompute($getRecomputeJob, $worker_id);
-        //     return false;
-        // }
+        $getReportJob = $this->report_manager->getReportJob();
+        if($getReportJob){
+            $this->report_manager->processReport($getReportJob, $worker_id);
+            return false;
+        }
+        $getRecomputeJob = $this->recompute_manager->getRecomputeJob();
+        if($getRecomputeJob){
+            $this->recompute_manager->processRecompute($getRecomputeJob, $worker_id);
+            return false;
+        }
         $getPayrollJob = $this->payroll_manager->getPayrollJob();
         if($getPayrollJob){
             $this->payroll_manager->processPayroll($getPayrollJob, $worker_id);
