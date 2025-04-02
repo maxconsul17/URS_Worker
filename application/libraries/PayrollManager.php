@@ -84,7 +84,9 @@ class PayrollManager
 		$emp_data["campusid"] = $data["campusid"];
 
         $emp_data["path"] = "files/payroll/{$details->id}.pdf";
-        $this->CI->load->view('payroll/payslip_detailed', $emp_data);
+        if($data["quarter"] == 1) $this->CI->load->view('forms_pdf/payslip_detailed', $emp_data); 
+		else $this->CI->load->view('forms_pdf/payslip_basic', $emp_data);
+        
         $this->worker_model->updatePayrollStatus($details->id, "done");
     }	
 
