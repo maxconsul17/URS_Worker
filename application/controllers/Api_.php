@@ -42,7 +42,7 @@
 						$this->db->insert("report_list", $data["report_details"]);
 					endforeach;
 				endforeach;
-
+				$this->response(array("rep_id" => $rep_id), 200);
 			}else{
 				$this->response("Invalid Credentials", 200);
 			}
