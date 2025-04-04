@@ -24,6 +24,7 @@
 							$this->db->query("DELETE FROM employee_attendance_teaching WHERE `date` = '{$logs->date}' AND employeeid = '{$logs->employeeid}'");
 							$last_date = $logs->date;
 						} 
+						$this->db->insert("employee_attendance_teaching", $logs);
 					endforeach;
 				endforeach;
 
@@ -34,6 +35,7 @@
 							$this->db->query("DELETE FROM employee_attendance_nonteaching WHERE `date` = '{$logs->date}' AND employeeid = '{$logs->employeeid}'");
 							$last_date = $logs->date;
 						} 
+						$this->db->insert("employee_attendance_nonteaching", $logs);
 					endforeach;
 				endforeach;
 
