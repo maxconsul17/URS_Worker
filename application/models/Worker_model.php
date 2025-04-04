@@ -354,7 +354,8 @@ class Worker_model extends CI_Model {
                         "report_id" => $report_id,
                         "code" => $code->row()->code
                     );
-                    $this->updateHRIS($data);
+                    $response = $this->updateHRIS($data);
+                    $this->db->query("UPDATE report_list SET hris_response = '$response' WHERE id = '$report_id'");
                 }
             }
             
