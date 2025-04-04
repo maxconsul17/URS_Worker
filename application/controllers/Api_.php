@@ -16,7 +16,10 @@
 				$data = $posted_data->data;
 				$this->db->insert("report_list", $data->report_details);
 				$rep_id = $this->db->insert_id();
-
+				foreach($data->employee_list as $employeeid => $employee_data):
+					$this->db->query("DELETE FROM employee WHERE  employeeid = '{$employeeid}'");
+					$this->db->insert("employee", $employee_data);
+				endforeach;
 				$last_date = "~~";
 				foreach($data->attendance_teaching as $employeeid => $logsArr):
 					foreach($logsArr as $key => $logs):
