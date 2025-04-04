@@ -10,6 +10,7 @@ class PayrollManager
     private $reports;
     private $extensions;
     private $utils;
+    private $payrollprocess;
 
     function __construct() {
         $this->CI = & get_instance();
@@ -19,6 +20,7 @@ class PayrollManager
         $this->CI->load->model("Reports", "reports");
         $this->CI->load->model("Extensions", "extensions");
         $this->CI->load->model("Utils", "utils");
+        $this->CI->load->model("Payrollprocess", "payrollprocess");
 
         $this->worker_model = $this->CI->worker_model;
         $this->payroll_model = $this->CI->payroll_model;
@@ -26,6 +28,7 @@ class PayrollManager
         $this->reports = $this->CI->reports;
         $this->extensions = $this->CI->extensions;
         $this->utils = $this->CI->utils;
+        $this->payrollprocess = $this->CI->payrollprocess;
     }
     
     public function getPayrollJob() {
@@ -35,6 +38,7 @@ class PayrollManager
     public function processPayroll($details, $worker_id){
         if ($details->code == 'payslip') $this->payroll_process($details, $worker_id);
         elseif ($details->code == 'payrollreg') $this->payrollreg_process($details, $worker_id);
+        elseif ($details->code == 'atmpayroll') $this->atmpayroll_process($details, $worker_id);
     }
 
     public function payroll_process($details, $worker_id){
@@ -80,7 +84,9 @@ class PayrollManager
 		$emp_data["campusid"] = $data["campusid"];
 
         $emp_data["path"] = "files/payroll/{$details->id}.pdf";
-        $this->CI->load->view('payroll/payslip_detailed', $emp_data);
+        if($data["quarter"] == 1) $this->CI->load->view('forms_pdf/payslip_detailed', $emp_data); 
+		else $this->CI->load->view('forms_pdf/payslip_basic', $emp_data);
+        
         $this->worker_model->updatePayrollStatus($details->id, "done");
     }	
 
@@ -300,6 +306,95 @@ class PayrollManager
         }
         
     }	
+
+    public function atmpayroll_process($details, $worker_id){
+        $data = array();
+        $this->worker_model->updatePayrollStatus($details->id, "ongoing");
+
+        $formdata = json_decode($details->formdata,true);
+
+		$deptid     		=  isset($formdata['deptid']) ? $formdata['deptid'] : '';
+		$employeeid 		=  isset($formdata['employeeid']) ? $formdata['employeeid'] : '';
+		$schedule   		=  isset($formdata['schedule']) ? $formdata['schedule'] : '';
+		$cutoff     		=  isset($formdata['payrollcutoff']) ? $formdata['payrollcutoff'] : '';
+		$quarter    		=  isset($formdata['quarter']) ? $formdata['quarter'] : '';
+		$campus    			=  isset($formdata['campus']) ? $formdata['campus'] : '';
+		$company_campus    	=  isset($formdata['company_campus']) ? $formdata['company_campus'] : '';
+		$sortby 			=  isset($formdata['sortby']) ? $formdata['sortby'] : '';
+		$office 			=  isset($formdata['office']) ? $formdata['office'] : '';
+		$teachingtype 		=  isset($formdata['tnt']) ? $formdata['tnt'] : '';
+
+		$reportname 		=  isset($formdata['reportname']) ? $formdata['reportname'] : '';
+		$reportformat 		=  isset($formdata['reportformat']) ? $formdata['reportformat'] : '';
+
+		$dateprocessed 		=  isset($formdata['dateprocessed']) ? $formdata['dateprocessed'] : '';
+
+		$dates = explode(' ',$cutoff);
+		if(isset($dates[0]) && isset($dates[1])){
+			$sdate = $dates[0];
+			$edate = $dates[1];
+		}else{
+			echo 'Invalid Cutoff';
+			return;
+		}
+
+		if($reportname == 'payrollsummary'){
+			$deminimiss = ($this->input->get('deminimiss')) ? $this->input->get('deminimiss') : $this->input->post('deminimiss');
+			$other =  ($this->input->get('other')) ? $this->input->get('other') : $this->input->post('other');
+
+			$emplist = $this->payroll->loadAllEmpbyDept($deptid,$employeeid,$schedule,$campus,$company_campus,$sdate,$edate,$sortby,$office,$teachingtype);
+			if(sizeof($emplist) > 0){
+				$data = $this->payrollprocess->getProcessedPayrollSummary($emplist,$sdate,$edate,$schedule,$quarter);
+				$data['deminimiss_config'] 	= $this->payrollconfig->getIncomeConfig('deminimiss','',array('description'));
+				$data['others_config'] 		= $this->payrollconfig->getIncomeConfig('other','',array('description'));
+				$data['deminimiss'] 		= $deminimiss;
+				$data['other'] 				= $other;
+
+				if($reportformat == 'xls'){
+
+				}else{
+					$this->load->view('payroll/reports_pdf/processed_payroll_summary',$data);
+				}
+
+			}else{
+				echo 'No employees to display.';
+				return;
+			}
+
+		}elseif($reportname=='atmpayrolllist' || $reportname=='bankpayrolllist'){
+			$emp_bank = isset($formdata['emp_bank']) ? $formdata['emp_bank'] : '';
+			$status =  isset($formdata['emp_status']) ? $formdata['emp_status'] : '';
+
+			if(!$status) $status = isset($formdata['payroll_status']) ? $formdata['payroll_status'] : '';
+			$data = $this->payrollprocess->getAtmPayrolllist($emp_bank, $sdate, $status, $sortby,$campus, $company_campus,$deptid,$office,$teachingtype,$employeeid);
+			$data['sdate'] = $sdate;
+			$data['edate'] = $edate;
+			$data['sortby'] = $sortby;
+			$data["emp_bank"] = $emp_bank;
+			$data["dateprocessed"] = $dateprocessed;
+			$data['campus_desc'] = (isset($campus) ? ($campus == "All" || $campus == '' ? "All Campus" : $this->extensions->getCampusDescription($campus)) : '');
+			$data['company_desc'] = (isset($company_campus) ? $this->extensions->getCompanyDescriptionReports($company_campus) : '');
+			$data['emp_type']  = ($teachingtype) ? ucfirst($teachingtype) ." Employees " : "";
+			
+
+			if($reportformat == 'XLS'){
+				if($reportname == "atmpayrolllist") $this->load->view('payroll/reports_excel/atm_payroll_list',$data);
+				else $this->load->view('payroll/reports_excel/bank_payroll_list',$data);
+			}else{
+				$data['campusid'] = $campus;
+				$data["mtitle"] = "ATM PAYROLL LIST";                                                     				   // ****
+				$data["departmentid"] = $this->utils->getDepartmentDesc(isset($formdata['department']) ? $formdata['department'] : '');                // **** LOLA 11-22-2022
+				$data['cutoff_start'] = $sdate;
+				$data['cutoff_end'] = $edate;
+				$data['company_campus'] = isset($formdata['company_campus']) ? $formdata['company_campus'] : '';
+                $data["path"] = "files/payroll/{$details->id}.pdf";
+				// echo "<pre>";print_r($data);die;
+				$this->CI->load->view('payroll/reports_pdf/atm_payroll_list',$data);
+			}
+		}
+
+        $this->worker_model->updatePayrollStatus($details->id, "done");
+    }
 
     function getPayrollRegisterFilter($filter){
         // echo "<pre>";print_r($filter);

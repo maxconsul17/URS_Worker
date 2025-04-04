@@ -26,6 +26,7 @@ RUN crontab /etc/cron.d/worker_cron
 # Create an entrypoint script to run both cron and apache2
 RUN echo '#!/bin/bash' > /entrypoint.sh && \
     echo 'service cron start' >> /entrypoint.sh && \
+    echo 'apache2-foreground &' >> /entrypoint.sh && \
     echo 'php /var/www/html/hris/index.php worker/listen' >> /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
