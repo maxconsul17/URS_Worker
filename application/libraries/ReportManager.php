@@ -105,6 +105,7 @@ class ReportManager
                 continue;
             }
         }
+        $this->worker_model->updateHris($det->id);
     }
 
     public function process_summAbsentTardy($det, $worker_id){
