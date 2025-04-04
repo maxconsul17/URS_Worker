@@ -20,24 +20,16 @@
 					$this->db->query("DELETE FROM employee WHERE  employeeid = '{$employeeid}'");
 					$this->db->insert("employee", $employee_data);
 				endforeach;
-				$last_date = "~~";
+				$this->db->query("DELETE FROM employee_attendance_teaching");
+				$this->db->query("DELETE FROM employee_attendance_nonteaching");
 				foreach($data->attendance_teaching as $employeeid => $logsArr):
 					foreach($logsArr as $key => $logs):
-						if($last_date != $logs->date){
-							$this->db->query("DELETE FROM employee_attendance_teaching WHERE `date` = '{$logs->date}' AND employeeid = '{$logs->employeeid}'");
-							$last_date = $logs->date;
-						} 
 						$this->db->insert("employee_attendance_teaching", $logs);
 					endforeach;
 				endforeach;
 
-				$last_date = "~~";
 				foreach($data->attendance_nonteaching as $employeeid => $logsArr):
 					foreach($logsArr as $key => $logs):
-						if($last_date != $logs->date){
-							$this->db->query("DELETE FROM employee_attendance_nonteaching WHERE `date` = '{$logs->date}' AND employeeid = '{$logs->employeeid}'");
-							$last_date = $logs->date;
-						} 
 						$this->db->insert("employee_attendance_nonteaching", $logs);
 					endforeach;
 				endforeach;
