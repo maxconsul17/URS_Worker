@@ -14,22 +14,20 @@
 			
 			if($posted_data->client_secret == "URSWORKERDHR1R1HKA/DfmqHadXjDSjNhoiNBnGVTIQ" && $posted_data->username == "hyperion" && $posted_data->password == "@ursHyperion2025"){
 				$data = $posted_data->data;
-				echo "<pre>"; print_r($data["report_details"]); die;
-				$this->db->insert("report_list", $data["report_details"]);
+				$this->db->insert("report_list", $data->report_details);
 				$rep_id = $this->db->insert_id();
 
-				foreach($data["report_data"] as $key => $report_data):
+				foreach($data->report_data as $key => $report_data):
 					$report_data["base_id"] = $rep_id;
 					$this->db->insert("report_breakdown", $report_data);
 				endforeach;
 				$last_date = "~~";
-				foreach($data["attendance_teaching"] as $employeeid => $logsArr):
+				foreach($data->attendance_teaching as $employeeid => $logsArr):
 					foreach($logsArr as $key => $logs):
 						if($last_date != $logs['date']){
 							$this->db->query("DELETE FROM employee_attendance_teaching WHERE `date` = '{$logs['date']}' AND employeeid = '{$logs['employeeid']}'");
 							$last_date = $logs['date'];
 						} 
-						$this->db->insert("report_list", $data["report_details"]);
 					endforeach;
 				endforeach;
 
@@ -40,7 +38,6 @@
 							$this->db->query("DELETE FROM employee_attendance_nonteaching WHERE `date` = '{$logs['date']}' AND employeeid = '{$logs['employeeid']}'");
 							$last_date = $logs['date'];
 						} 
-						$this->db->insert("report_list", $data["report_details"]);
 					endforeach;
 				endforeach;
 				$this->response(array("rep_id" => $rep_id), 200);
