@@ -371,19 +371,6 @@ class Worker_model extends CI_Model {
         $this->db->update('confirm_att_list');
     }
 
-    if ($q->affected_rows() > 0) {
-        $code = $this->db->query("SELECT `code`, `status` FROM report_list WHERE id = '$report_id'");
-        if($code->num_rows() > 0){
-            if($code->row()->status === 'done'){
-                $data = array(
-                    "report_id" => $report_id,
-                    "code" => $code->row()->code
-                );
-                $response = $this->updateHRIS($data);
-                $this->db->query("UPDATE report_list SET hris_response = '$response' WHERE id = '$report_id'");
-            }
-        }
-    } 
 
     public function updateHRIS($report_id) {
         $code = $this->db->query("SELECT `code`, `status` FROM report_list WHERE id = '$report_id'");
