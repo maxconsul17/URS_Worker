@@ -375,7 +375,7 @@ class Worker_model extends CI_Model {
     public function updateHRIS($report_id) {
         $code = $this->db->query("SELECT `code`, `status` FROM report_list WHERE id = '$report_id'");
         if($code->num_rows() > 0){
-            if($code->row()->status === 'done'){
+            if($code->row()->status == "done"){
                 $data = array(
                     "report_id" => $report_id,
                     "code" => $code->row()->code
