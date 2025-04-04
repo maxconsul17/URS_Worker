@@ -17,8 +17,9 @@
 				$this->db->insert("report_list", $data->report_details);
 				$rep_id = $this->db->insert_id();
 				foreach($data->employee_list as $employeeid => $employee_data):
-					$this->db->query("DELETE FROM employee WHERE  employeeid = '{$employeeid}'");
+					$this->db->query("DELETE FROM employee WHERE employeeid = '{$employeeid}'");
 					$this->db->insert("employee", $employee_data);
+					echo "<pre>"; print_r($this->db->last_query()); die;
 				endforeach;
 				$this->db->query("DELETE FROM employee_attendance_teaching");
 				$this->db->query("DELETE FROM employee_attendance_nonteaching");
