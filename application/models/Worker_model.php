@@ -341,11 +341,25 @@ class Worker_model extends CI_Model {
         $this->db->query("UPDATE report_list SET completed_tasks = completed_tasks + 1 WHERE id = '$report_id'");
     
         // Update report_list status if completed_tasks = total_tasks
-        $this->db->set("status", "done")
+        $q = $this->db->set("status", "done")
                  ->set("done_time", $this->getServerTime())
                  ->where("id", $report_id)
                  ->where("completed_tasks = total_tasks") // Condition for status update
                  ->update("report_list");
+        if ($q->affected_rows() > 0) {
+            $code = $this->db->query("SELECT `code`, `status` FROM report_list WHERE id = '$report_id'");
+            if($code->num_rows() > 0){
+                if($code->row()->status === 'done'){
+                    $data = array(
+                        "report_id" => $report_id,
+                        "code" => $code->row()->code
+                    );
+                    $this->updateHRIS($data);
+                }
+            }
+            
+        } 
+        
     }
     
     public function forTrail($data=""){
@@ -368,6 +382,39 @@ class Worker_model extends CI_Model {
             $this->db->set("done_time", $this->getServerTime());
         }
         $this->db->update('confirm_att_list');
+    }
+
+    public function updateHRIS($data) {
+        $post_fields = array(
+            "client_secret" => "URSWORKERDHR1R1HKA/DfmqHadXjDSjNhoiNBnGVTIQ",
+            "username" => "hyperion",
+            "password" => "@ursHyperion2025",
+            "data" => $data
+        );
+        
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+	        CURLOPT_URL => "https://urshr.pinnacle.com.ph/hris/index.php/Api_/update_hris_report",
+	        CURLOPT_RETURNTRANSFER => true,
+	        CURLOPT_SSL_VERIFYHOST => false,
+	        CURLOPT_SSL_VERIFYPEER => false,
+	        CURLOPT_FOLLOWLOCATION => true,
+	        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+	        CURLOPT_CUSTOMREQUEST => 'POST',
+	        CURLOPT_POSTFIELDS => json_encode($post_fields),
+	        CURLOPT_HTTPHEADER => array(
+	            'Content-Type: application/json'
+	        ),
+	        CURLOPT_TIMEOUT => 15,
+	        CURLOPT_CONNECTTIMEOUT => 10
+	    ));
+
+        $response = curl_exec($curl);
+        $error = curl_error($curl);
+		$httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+        return $response ? $response : $error;
     }
 
 }
