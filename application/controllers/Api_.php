@@ -28,7 +28,7 @@
 				endforeach;
 
 				$last_date = "~~";
-				foreach($data["attendance_nonteaching"] as $employeeid => $logsArr):
+				foreach($data->attendance_nonteaching as $employeeid => $logsArr):
 					foreach($logsArr as $key => $logs):
 						if($last_date != $logs->date){
 							$this->db->query("DELETE FROM employee_attendance_nonteaching WHERE `date` = '{$logs->date}' AND employeeid = '{$logs->employeeid}'");
