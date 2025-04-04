@@ -14,6 +14,7 @@
 			
 			if($posted_data->client_secret == "URSWORKERDHR1R1HKA/DfmqHadXjDSjNhoiNBnGVTIQ" && $posted_data->username == "hyperion" && $posted_data->password == "@ursHyperion2025"){
 				$data = $posted_data->data;
+				echo "<pre>"; print_r($data); die;
 				$this->db->insert("report_list", $data["report_details"]);
 				$rep_id = $this->db->insert_id();
 
