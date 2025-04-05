@@ -187,7 +187,7 @@
                     $content .="
 
                         <tr>
-                            <td style='padding: 2px;text-align: center;font-size: 10px;'>".$date."</td>
+                            <td style='padding: 2px;text-align: center;font-size: 10px; white-space: nowrap'>".$date."</td>
                             <td style='padding: 2px;text-align: center;font-size: 10px;'>".$official_in."</td>
                             <td style='padding: 2px;text-align: center;font-size: 10px;'>".$official_out."</td>
                             <!-- <td style='padding: 2px;text-align: center;font-size: 10px;'>".$day."</td> -->
