@@ -272,24 +272,24 @@ $content .="
     <br>
     <table style='width:100%;'>
         <tr>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? 'Conforme:' : '')."</td>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? 'Verified By:' : '')."</td>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? 'Approved By:' : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? 'Conforme:' : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? 'Verified By:' : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? 'Approved By:' : '')."</td>
         </tr>
         <tr>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? '___________________________________' : '')."</td>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? '___________________________________' : '')."</td>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? '___________________________________' : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? '___________________________________' : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? '___________________________________' : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? '___________________________________' : '')."</td>
         </tr>
         <tr>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? $this->extensions->getEmployeeName($employeeid) : '')."</td>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? $verified_name : '')."</td>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? $campus_director_name : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? $this->extensions->getEmployeeName($employeeid) : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? $verified_name : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? $campus_director_name : '')."</td>
         </tr>
         <tr>
             <td style='text-align: center;'></td>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? $verified_position : '')."</td>
-            <td style='text-align: center' width=33%>".($this->extras->findIfAdmin($userlog) == true ? $campus_director_position : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? $verified_position : '')."</td>
+            <td style='text-align: center' width=33%>".(1 ? $campus_director_position : '')."</td>
         </tr>
     </table>
 </div>";
